@@ -54,6 +54,11 @@ defineOptions({
   background: var(--color-overlay-lighter);
 }
 
+.header__menu-button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
 .header__menu-icon {
   font-size: 1rem;
 }

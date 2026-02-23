@@ -63,6 +63,12 @@ defineEmits<{
   color: var(--color-accent);
 }
 
+.bottom-nav__item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
 .bottom-nav__icon {
   font-size: 1.1rem;
 }

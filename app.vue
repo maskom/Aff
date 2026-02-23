@@ -3,14 +3,32 @@
     <AffiliateHeader />
 
     <section class="app__search" role="search" data-testid="search-section">
-      <input
-        v-model="search"
-        class="app__search-input"
-        placeholder="Cari produk komisi tinggi atau kata kunci kampanye..."
-        type="search"
-        aria-label="Cari produk atau kampanye"
-        data-testid="search-input"
-      />
+      <div class="app__search-wrapper">
+        <svg
+          class="app__search-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          v-model="search"
+          class="app__search-input"
+          placeholder="Cari produk komisi tinggi atau kata kunci kampanye..."
+          type="search"
+          aria-label="Cari produk atau kampanye"
+          data-testid="search-input"
+        />
+      </div>
     </section>
 
     <section class="app__highlights" data-testid="highlights-section">
@@ -303,10 +321,24 @@ function getInitials(name: string) {
   box-shadow: 0 12px 48px var(--color-shadow-strong);
 }
 
-.app {
+.app__search {
   padding: 12px 20px 6px;
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.app__search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.app__search-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--color-text-faint);
+  pointer-events: none;
+  flex-shrink: 0;
 }
 
 .app__search-input {
@@ -314,7 +346,7 @@ function getInitials(name: string) {
   background-color: var(--color-surface-elevated);
   border: none;
   border-radius: 999px;
-  padding: 12px 18px;
+  padding: 12px 18px 12px 42px;
   color: var(--color-text);
   font-size: 0.92rem;
   outline: none;
@@ -323,6 +355,12 @@ function getInitials(name: string) {
 
 .app__search-input::placeholder {
   color: var(--color-text-faint);
+}
+
+.app__search-input:focus-visible {
+  box-shadow:
+    inset 0 2px 4px var(--color-shadow),
+    0 0 0 2px var(--color-accent);
 }
 
 .app__highlights {
@@ -373,6 +411,11 @@ function getInitials(name: string) {
   box-shadow: 0 6px 18px var(--color-shadow-accent);
 }
 
+.app__highlights-action:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
 .app__filters {
   display: flex;
   gap: 10px;
@@ -404,6 +447,11 @@ function getInitials(name: string) {
     var(--color-accent-overlay-dark-strong)
   );
   color: var(--color-bg);
+}
+
+.app__filter:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .app__content {
@@ -537,6 +585,11 @@ function getInitials(name: string) {
   background: var(--color-accent-overlay-soft);
 }
 
+.app__cta:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .app__empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -558,7 +611,7 @@ function getInitials(name: string) {
 
 .app__fab {
   position: fixed;
-  right: calc(50% - 200px);
+  right: max(20px, calc((100vw - 480px) / 2 + 20px));
   bottom: 84px;
   width: 54px;
   height: 54px;
@@ -573,6 +626,11 @@ function getInitials(name: string) {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.app__fab:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
 }
 
 @media (max-width: 560px) {
