@@ -11,15 +11,22 @@ function generateRequestId(): string {
 }
 
 function log(level: string, message: string, data: Record<string, unknown> = {}): void {
-  console.log(JSON.stringify({
-    timestamp: new Date().toISOString(),
-    level,
-    message,
-    ...data,
-  }));
+  console.log(
+    JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level,
+      message,
+      ...data,
+    })
+  );
 }
 
-async function serveStaticAsset(request: Request, env: Env, cache: Cache, requestId: string): Promise<Response> {
+async function serveStaticAsset(
+  request: Request,
+  env: Env,
+  cache: Cache,
+  requestId: string
+): Promise<Response> {
   const url = new URL(request.url);
   const assetKey = url.pathname === '/' ? '/index.html' : url.pathname;
   const startTime = Date.now();
@@ -36,7 +43,10 @@ async function serveStaticAsset(request: Request, env: Env, cache: Cache, reques
   const asset = await env.AFF_STATIC.get(assetKey, { type: 'arrayBuffer' });
   if (!asset) {
     log('warn', 'asset_not_found', { requestId, path: url.pathname });
-    return new Response('Not Found', { status: 404, headers: { 'x-request-id': requestId } });
+    return new Response(JSON.stringify({ error: 'Not Found', path: url.pathname }), {
+      status: 404,
+      headers: { 'content-type': 'application/json', 'x-request-id': requestId },
+    });
   }
 
   const response = new Response(asset, {
@@ -50,7 +60,11 @@ async function serveStaticAsset(request: Request, env: Env, cache: Cache, reques
 
   response.headers.set('content-length', String((asset as ArrayBuffer).byteLength));
   await cache.put(cacheKey, response.clone());
-  log('info', 'asset_served', { requestId, path: url.pathname, durationMs: Date.now() - startTime });
+  log('info', 'asset_served', {
+    requestId,
+    path: url.pathname,
+    durationMs: Date.now() - startTime,
+  });
   return response;
 }
 
@@ -80,12 +94,12 @@ function contentType(pathname: string): string {
 
 async function proxyApi(request: Request, env: Env, requestId: string): Promise<Response> {
   const startTime = Date.now();
-  
+
   if (!env.AFF_API_BASE) {
     log('error', 'api_base_not_configured', { requestId });
-    return new Response('API base not configured', { 
-      status: 500, 
-      headers: { 'x-request-id': requestId } 
+    return new Response(JSON.stringify({ error: 'API base not configured' }), {
+      status: 500,
+      headers: { 'content-type': 'application/json', 'x-request-id': requestId },
     });
   }
 
@@ -101,12 +115,12 @@ async function proxyApi(request: Request, env: Env, requestId: string): Promise<
       redirect: 'manual',
     });
 
-    log('info', 'api_proxy_success', { 
-      requestId, 
-      path: url.pathname, 
+    log('info', 'api_proxy_success', {
+      requestId,
+      path: url.pathname,
       method: request.method,
       status: upstream.status,
-      durationMs: Date.now() - startTime 
+      durationMs: Date.now() - startTime,
     });
 
     const response = new Response(upstream.body, {
@@ -117,12 +131,12 @@ async function proxyApi(request: Request, env: Env, requestId: string): Promise<
     return response;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Upstream request failed';
-    log('error', 'api_proxy_error', { 
-      requestId, 
-      path: url.pathname, 
+    log('error', 'api_proxy_error', {
+      requestId,
+      path: url.pathname,
       method: request.method,
       error: message,
-      durationMs: Date.now() - startTime 
+      durationMs: Date.now() - startTime,
     });
     return new Response(JSON.stringify({ error: message }), {
       status: 502,
@@ -137,11 +151,11 @@ export default {
     const cache = caches.default;
     const requestId = generateRequestId();
 
-    log('info', 'request_received', { 
-      requestId, 
-      method: request.method, 
+    log('info', 'request_received', {
+      requestId,
+      method: request.method,
       path: url.pathname,
-      environment: env.ENVIRONMENT || 'unknown'
+      environment: env.ENVIRONMENT || 'unknown',
     });
 
     const response = url.pathname.startsWith('/api')
