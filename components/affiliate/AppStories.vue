@@ -1,23 +1,13 @@
 <template>
-  <section
-    class="app-stories"
-    aria-label="Sorotan performa harian"
-  >
-    <article
-      v-for="story in stories"
-      :key="story.id"
-      class="app-stories__item"
-    >
+  <section class="app-stories" aria-label="Sorotan performa harian">
+    <article v-for="story in stories" :key="story.id" class="app-stories__item">
       <div class="app-stories__icon">
         {{ story.icon }}
       </div>
       <p class="app-stories__label">
         {{ story.label }}
       </p>
-      <p
-        class="app-stories__trend"
-        :data-trend="story.trend"
-      >
+      <p class="app-stories__trend" :data-trend="story.trend">
         {{ story.change }}
       </p>
     </article>

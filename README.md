@@ -3,6 +3,7 @@
 An affiliate marketing landing experience inspired by WhatsApp's conversational layout. The project is built with Nuxt 3 and Vue 3, designed for rapid iteration, automated quality checks, and deployment to Cloudflare Workers.
 
 ## Documentation Map
+
 - [`docs/CODING_STANDARDS.md`](docs/CODING_STANDARDS.md) — language, testing, accessibility, and review requirements for contributors.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — high-level system overview, Nuxt modules, state management, and theming strategy.
 - [`docs/PLAN.md`](docs/PLAN.md) — staged roadmap to evolve the site from MVP to a fully featured affiliate portal.
@@ -11,6 +12,7 @@ An affiliate marketing landing experience inspired by WhatsApp's conversational 
 - [`cloudflare/`](cloudflare/) — Worker runtime entry point and deployment configuration template.
 
 ## Quick Start
+
 1. **Install dependencies**
    ```bash
    pnpm install
@@ -32,12 +34,14 @@ An affiliate marketing landing experience inspired by WhatsApp's conversational 
 > Use Nuxt DevTools (<kbd>Alt</kbd> + <kbd>D</kbd>) during development to inspect routes, components, and performance.
 
 ## Tech Stack
+
 - **Nuxt 3 + Vue 3** for hybrid rendering and component auto-imports.
 - **TypeScript** with strict editor support via generated types.
 - **UnoCSS**-style utility classes defined within `app.vue` for rapid theme iteration.
 - **Cloudflare Workers** for edge deployment backed by static asset serving.
 
 ## Project Structure
+
 ```
 .
 ├─ app.vue                 # Root UI shell with WhatsApp-inspired layout
@@ -57,12 +61,15 @@ An affiliate marketing landing experience inspired by WhatsApp's conversational 
 ```
 
 ## Quality Gates
+
 Before opening a pull request:
+
 - Follow the coding standards in [`docs/CODING_STANDARDS.md`](docs/CODING_STANDARDS.md).
 - Ensure `pnpm lint`, `pnpm test`, and `pnpm build` (or equivalents) pass locally.
 - Update documentation when you modify behavior, architecture, or workflows.
 
 ## Deployment
+
 1. Build the static output:
    ```bash
    pnpm build
@@ -78,6 +85,7 @@ Before opening a pull request:
 See [`cloudflare/worker.ts`](cloudflare/worker.ts) and [`cloudflare/wrangler.toml`](cloudflare/wrangler.toml) for the recommended setup.
 
 ## Contributing
+
 1. Create a feature branch from `main`.
 2. Implement your change following the roadmap and standards.
 3. Run the required checks and update docs.
@@ -85,4 +93,5 @@ See [`cloudflare/worker.ts`](cloudflare/worker.ts) and [`cloudflare/wrangler.tom
 5. Request review from at least one maintainer; ensure all status checks pass.
 
 ## License
+
 This project is provided without a specific license. Contact the maintainers before distributing or commercializing the code.

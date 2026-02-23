@@ -3,10 +3,7 @@
     <div class="app-header__title">
       <span class="app-header__title-highlight">Affiliate</span> Connect
     </div>
-    <button
-      class="app-header__menu-button"
-      type="button"
-    >
+    <button class="app-header__menu-button" type="button">
       <span class="app-header__menu-icon">☰</span>
       <span class="app-header__menu-text">Login</span>
     </button>

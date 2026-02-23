@@ -1,11 +1,5 @@
 <template>
-  <button
-    class="app-fab"
-    type="button"
-    aria-label="Tambah kampanye baru"
-  >
-    ＋
-  </button>
+  <button class="app-fab" type="button" aria-label="Tambah kampanye baru">＋</button>
 </template>
 
 <style scoped>

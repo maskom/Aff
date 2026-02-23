@@ -1,8 +1,5 @@
 <template>
-  <section
-    class="app-filters"
-    aria-label="Filter kategori kampanye"
-  >
+  <section class="app-filters" aria-label="Filter kategori kampanye">
     <button
       v-for="filter in filters"
       :key="filter"

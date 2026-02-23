@@ -4,40 +4,20 @@
     <AffiliateAppSearch v-model="search" />
     <AffiliateAppHighlights />
     <AffiliateAppStories :stories="stories" />
-    <AffiliateAppFilters
-      v-model:selected-filter="selectedFilter"
-      :filters="filters"
-    />
+    <AffiliateAppFilters v-model:selected-filter="selectedFilter" :filters="filters" />
     <main class="app__content">
-      <h2 class="app__section-title">
-        Kampanye Unggulan
-      </h2>
-      <ul
-        v-if="filteredOffers.length"
-        class="app__list"
-      >
-        <AffiliateOfferCard
-          v-for="offer in filteredOffers"
-          :key="offer.id"
-          :offer="offer"
-        />
+      <h2 class="app__section-title">Kampanye Unggulan</h2>
+      <ul v-if="filteredOffers.length" class="app__list">
+        <AffiliateOfferCard v-for="offer in filteredOffers" :key="offer.id" :offer="offer" />
       </ul>
-      <div
-        v-else
-        class="app__empty-state"
-      >
-        <p class="app__empty-title">
-          Tidak ada kampanye ditemukan
-        </p>
+      <div v-else class="app__empty-state">
+        <p class="app__empty-title">Tidak ada kampanye ditemukan</p>
         <p class="app__empty-text">
           Coba gunakan kata kunci lain atau pilih kategori berbeda untuk melihat rekomendasi.
         </p>
       </div>
     </main>
-    <AffiliateAppBottomNav
-      v-model:active-menu="activeMenu"
-      :menu-items="bottomMenu"
-    />
+    <AffiliateAppBottomNav v-model:active-menu="activeMenu" :menu-items="bottomMenu" />
     <AffiliateAppFab />
   </div>
 </template>

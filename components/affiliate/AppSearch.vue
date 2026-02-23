@@ -6,7 +6,7 @@
       placeholder="Cari produk komisi tinggi atau kata kunci kampanye..."
       type="search"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-    >
+    />
   </section>
 </template>
 

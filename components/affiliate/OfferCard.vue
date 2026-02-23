@@ -1,9 +1,6 @@
 <template>
   <li class="offer-card">
-    <div
-      class="offer-card__avatar"
-      :aria-label="`Avatar ${offer.brand}`"
-    >
+    <div class="offer-card__avatar" :aria-label="`Avatar ${offer.brand}`">
       {{ offer.brandInitials }}
     </div>
     <div class="offer-card__body">
@@ -29,12 +26,7 @@
         <span class="offer-card__meta-text">Konversi {{ offer.conversion }}%</span>
       </div>
     </div>
-    <button
-      class="offer-card__cta"
-      type="button"
-    >
-      Promosikan
-    </button>
+    <button class="offer-card__cta" type="button">Promosikan</button>
   </li>
 </template>
 

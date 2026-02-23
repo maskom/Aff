@@ -1,8 +1,5 @@
 <template>
-  <nav
-    class="app-bottom-nav"
-    aria-label="Menu utama"
-  >
+  <nav class="app-bottom-nav" aria-label="Menu utama">
     <button
       v-for="item in menuItems"
       :key="item.label"

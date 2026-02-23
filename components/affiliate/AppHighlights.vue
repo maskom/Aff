@@ -1,21 +1,12 @@
 <template>
   <section class="app-highlights">
-    <div class="app-highlights__badge">
-      Tips Hari Ini
-    </div>
-    <h1 class="app-highlights__title">
-      Optimalkan penawaran terbaikmu
-    </h1>
+    <div class="app-highlights__badge">Tips Hari Ini</div>
+    <h1 class="app-highlights__title">Optimalkan penawaran terbaikmu</h1>
     <p class="app-highlights__text">
       Gunakan materi promosi siap pakai, atur ulang CTA sesuai audiens, dan pantau performa konversi
       untuk memaksimalkan komisi.
     </p>
-    <button
-      class="app-highlights__action"
-      type="button"
-    >
-      Lihat Toolkit
-    </button>
+    <button class="app-highlights__action" type="button">Lihat Toolkit</button>
   </section>
 </template>
 
