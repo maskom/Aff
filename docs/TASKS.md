@@ -12,7 +12,7 @@
 | AFF-07 | OAuth login flow                 | Phase 2 | Frontend/Backend | 5d       | Todo   | Login button launches OAuth; callback stores session; protected routes redirect unauthenticated users. |
 | AFF-08 | Favorites & saved filters        | Phase 2 | Frontend         | 4d       | Todo   | Users can star campaigns and persist selections via KV storage.                                        |
 | AFF-09 | Preview deployments              | Phase 2 | DevOps           | 2d       | Todo   | Every PR comment includes Worker preview URL with branch build.                                        |
-| AFF-10 | ADR framework                    | Phase 2 | Documentation    | 1d       | Todo   | `docs/adrs/0001-record-template.md` created; first ADR documents authentication choice.                |
+| AFF-10 | ADR framework                    | Phase 2 | Documentation    | 1d       | Done   | `docs/adrs/0001-record-template.md` created; first ADR documents Cloudflare Workers choice.            |
 | AFF-11 | Dark mode support                | Phase 3 | Frontend         | 3d       | Todo   | Theme toggle persists preference; passes accessibility contrast checks.                                |
 | AFF-12 | Localization                     | Phase 3 | Frontend         | 4d       | Todo   | Nuxt i18n configured with English & Indonesian locales; copy externalized.                             |
 | AFF-13 | CMS integration                  | Phase 3 | Backend          | 5d       | Todo   | Marketing copy fetched from headless CMS; caching strategy documented.                                 |
