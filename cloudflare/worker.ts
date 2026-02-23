@@ -7,6 +7,7 @@ export interface Env {
 const CACHE_TTL_SECONDS = 60 * 5;
 const UPSTREAM_TIMEOUT_MS = 10000;
 const ALLOWED_HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'] as const;
+const PATH_TRAVERSAL_PATTERNS = /(?:^|\/)\.\.(?:\/|$)|\x00/;
 
 const SENSITIVE_HEADERS = new Set([
   'host',
@@ -28,6 +29,22 @@ const SENSITIVE_HEADERS = new Set([
 
 function generateRequestId(): string {
   return crypto.randomUUID();
+}
+
+function sanitizePath(pathname: string): string | null {
+  try {
+    const decoded = decodeURIComponent(pathname);
+    if (PATH_TRAVERSAL_PATTERNS.test(decoded)) {
+      return null;
+    }
+    const normalized = decoded.replace(/\/+/g, '/').replace(/^\//, '');
+    if (normalized.includes('..') || normalized.startsWith('/') || normalized.includes('\0')) {
+      return null;
+    }
+    return '/' + normalized;
+  } catch {
+    return null;
+  }
 }
 
 function filterHeaders(headers: Headers): Headers {
@@ -58,7 +75,15 @@ async function serveStaticAsset(
   requestId: string
 ): Promise<Response> {
   const url = new URL(request.url);
-  const assetKey = url.pathname === '/' ? '/index.html' : url.pathname;
+  const sanitizedPath = sanitizePath(url.pathname);
+  if (!sanitizedPath) {
+    log('warn', 'path_traversal_blocked', { requestId, path: url.pathname });
+    return new Response('Bad Request', {
+      status: 400,
+      headers: { 'content-type': 'text/plain', 'x-request-id': requestId },
+    });
+  }
+  const assetKey = sanitizedPath === '/' ? '/index.html' : sanitizedPath;
   const startTime = Date.now();
 
   const cacheKey = new Request(url.toString(), request);
