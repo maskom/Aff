@@ -1,12 +1,15 @@
 # GitHub Workflow
 
 ## Branching Model
+
 - `main` — Always deployable. Protected with required status checks (`build`, `lint`, `test`).
 - `release/*` — Cut from `main` when preparing staged releases.
 - `feature/<task-id>-short-description` — Feature branches mapped to tasks in [`docs/TASKS.md`](./TASKS.md). Example: `feature/AFF-02-auth-shell`.
 
 ## Pull Request Checklist
+
 Before requesting review:
+
 1. Rebase on the latest `main` and resolve conflicts locally.
 2. Ensure the following commands succeed:
    ```bash
@@ -19,6 +22,7 @@ Before requesting review:
 5. Fill out the PR template (see below) and link the relevant task IDs.
 
 ## PR Template
+
 ```
 ## Summary
 -
@@ -35,16 +39,19 @@ Before requesting review:
 ```
 
 ## Review Process
+
 - At least one maintainer review is required.
 - Reviewers focus on correctness, accessibility, adherence to coding standards, and documentation updates.
 - Use GitHub suggestions for minor fixes. Request changes if substantial issues exist.
 
 ## Commit Standards
+
 - Follow Conventional Commits with task references (e.g., `feat(AFF-03): add campaign search composable`).
 - Keep commit messages under 72 characters per line.
 - Squash merges are preferred; keep history clean by rebasing before merge.
 
 ## Automation (Planned)
+
 - GitHub Actions workflow to run lint/test/build on each PR (AFF-01).
 - Automatic Cloudflare preview deployments for PR branches (AFF-09).
 - Renovate bot for dependency updates (Phase 3).
