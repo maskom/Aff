@@ -2,12 +2,13 @@
   <div class="app" data-testid="app">
     <AffiliateHeader />
 
-    <section class="app__search" data-testid="search-section">
+    <section class="app__search" role="search" data-testid="search-section">
       <input
         v-model="search"
         class="app__search-input"
         placeholder="Cari produk komisi tinggi atau kata kunci kampanye..."
         type="search"
+        aria-label="Cari produk atau kampanye"
         data-testid="search-input"
       />
     </section>
@@ -36,6 +37,7 @@
         :key="filter"
         :class="['app__filter', { 'is-active': selectedFilter === filter }]"
         type="button"
+        :aria-pressed="selectedFilter === filter"
         :data-testid="`filter-${filter.toLowerCase()}`"
         @click="selectedFilter = filter"
       >
