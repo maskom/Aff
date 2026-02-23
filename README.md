@@ -2,6 +2,17 @@
 
 An affiliate marketing landing experience inspired by WhatsApp's conversational layout. The project is built with Nuxt 3 and Vue 3, designed for rapid iteration, automated quality checks, and deployment to Cloudflare Workers.
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Quick Start](#quick-start)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Quality Gates](#quality-gates)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Prerequisites
 
 - **Node.js** 18.x or higher (LTS recommended)
@@ -9,12 +20,14 @@ An affiliate marketing landing experience inspired by WhatsApp's conversational 
 
 ## Documentation Map
 
-- [`docs/CODING_STANDARDS.md`](docs/CODING_STANDARDS.md) — language, testing, accessibility, and review requirements for contributors.
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — high-level system overview, Nuxt modules, state management, and theming strategy.
-- [`docs/PLAN.md`](docs/PLAN.md) — staged roadmap to evolve the site from MVP to a fully featured affiliate portal.
-- [`docs/TASKS.md`](docs/TASKS.md) — prioritized backlog with acceptance criteria and links to roadmap phases.
-- [`docs/GITHUB_WORKFLOW.md`](docs/GITHUB_WORKFLOW.md) — branch model, pull-request checklist, and review expectations.
-- [`cloudflare/`](cloudflare/) — Worker runtime entry point and deployment configuration template.
+| Document                                               | Description                                                                      |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| [`docs/CODING_STANDARDS.md`](docs/CODING_STANDARDS.md) | Language, testing, accessibility, and review requirements for contributors       |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)         | High-level system overview, Nuxt modules, state management, and theming strategy |
+| [`docs/PLAN.md`](docs/PLAN.md)                         | Staged roadmap to evolve the site from MVP to a fully featured affiliate portal  |
+| [`docs/TASKS.md`](docs/TASKS.md)                       | Prioritized backlog with acceptance criteria and links to roadmap phases         |
+| [`docs/GITHUB_WORKFLOW.md`](docs/GITHUB_WORKFLOW.md)   | Branch model, pull-request checklist, and review expectations                    |
+| [`cloudflare/`](cloudflare/)                           | Worker runtime entry point and deployment configuration template                 |
 
 ## Quick Start
 
