@@ -54,17 +54,25 @@ async function proxyApi(request: Request, env: Env) {
   const targetUrl = new URL(url.pathname.replace(/^\/api/, ''), env.AFF_API_BASE);
   targetUrl.search = url.search;
 
-  const upstream = await fetch(targetUrl.toString(), {
-    method: request.method,
-    headers: request.headers,
-    body: request.body,
-    redirect: 'manual',
-  });
+  try {
+    const upstream = await fetch(targetUrl.toString(), {
+      method: request.method,
+      headers: request.headers,
+      body: request.body,
+      redirect: 'manual',
+    });
 
-  return new Response(upstream.body, {
-    status: upstream.status,
-    headers: upstream.headers,
-  });
+    return new Response(upstream.body, {
+      status: upstream.status,
+      headers: upstream.headers,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Upstream request failed';
+    return new Response(JSON.stringify({ error: message }), {
+      status: 502,
+      headers: { 'content-type': 'application/json' },
+    });
+  }
 }
 
 export default {

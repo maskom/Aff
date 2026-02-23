@@ -22,7 +22,7 @@
 4. Edge caching: Worker caches API responses in Workers KV with TTL hints from the API, enabling near real-time updates with revalidation.
 
 ## Cloudflare Integration
-- **Worker** — Handles static asset responses and proxies API calls to the Nuxt server or external affiliate APIs when necessary.
+- **Worker** — Handles static asset responses and proxies API calls to the Nuxt server or external affiliate APIs when necessary. Includes error handling for upstream failures (returns 502 with JSON error details).
 - **R2 / KV** — Store static assets and cached API payloads.
 - **Durable Objects** (Phase 4) — Coordinate rate limits and store chat-like conversation history for affiliate leads.
 
