@@ -7,15 +7,24 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "nuxt typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "nuxt typecheck",
     "test": "echo \"Tests not configured yet. See AFF-02.\" && exit 0",
-    "format": "echo \"Formatter not configured yet. See AFF-03.\" && exit 0"
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260228.0",
     "@nuxt/devtools": "^1.0.3",
+    "@nuxt/eslint-config": "^1.15.1",
+    "eslint": "^10.0.1",
+    "eslint-config-prettier": "^10.1.8",
     "nuxt": "^3.8.2",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8.56.0",
     "vue": "^3.3.8",
+    "vue-eslint-parser": "^10.4.0",
     "vue-router": "^4.2.5"
   }
 }
