@@ -2,6 +2,7 @@ export interface Env {
   AFF_STATIC: KVNamespace;
   AFF_API_BASE?: string;
   ENVIRONMENT?: string;
+  VERSION?: string;
 }
 
 const CACHE_TTL_SECONDS = 60 * 5;
@@ -28,6 +29,49 @@ const SENSITIVE_HEADERS = new Set([
 
 function generateRequestId(): string {
   return crypto.randomUUID();
+}
+
+function handleHealthCheck(env: Env, requestId: string): Response {
+  const health = {
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    environment: env.ENVIRONMENT || 'development',
+    version: env.VERSION || 'unknown',
+    requestId,
+  };
+
+  return new Response(JSON.stringify(health), {
+    status: 200,
+    headers: {
+      'content-type': 'application/json',
+      'cache-control': 'no-store',
+      'x-request-id': requestId,
+    },
+  });
+}
+
+function handleReadinessCheck(env: Env, requestId: string): Response {
+  const checks: { name: string; status: string }[] = [
+    { name: 'kv_binding', status: env.AFF_STATIC ? 'ok' : 'missing' },
+  ];
+
+  const allHealthy = checks.every((c) => c.status === 'ok');
+
+  const readiness = {
+    status: allHealthy ? 'ready' : 'not_ready',
+    checks,
+    timestamp: new Date().toISOString(),
+    requestId,
+  };
+
+  return new Response(JSON.stringify(readiness), {
+    status: allHealthy ? 200 : 503,
+    headers: {
+      'content-type': 'application/json',
+      'cache-control': 'no-store',
+      'x-request-id': requestId,
+    },
+  });
 }
 
 function filterHeaders(headers: Headers): Headers {
@@ -213,7 +257,7 @@ async function proxyApi(request: Request, env: Env, requestId: string): Promise<
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
-    const cache = caches.default;
+    const cache = (caches as unknown as { default: Cache }).default;
     const requestId = generateRequestId();
 
     log('info', 'request_received', {
@@ -223,9 +267,17 @@ export default {
       environment: env.ENVIRONMENT || 'unknown',
     });
 
-    const response = url.pathname.startsWith('/api')
-      ? await proxyApi(request, env, requestId)
-      : await serveStaticAsset(request, env, cache, requestId);
+    let response: Response;
+
+    if (url.pathname === '/health' || url.pathname === '/healthz') {
+      response = handleHealthCheck(env, requestId);
+    } else if (url.pathname === '/ready' || url.pathname === '/readyz') {
+      response = handleReadinessCheck(env, requestId);
+    } else if (url.pathname.startsWith('/api')) {
+      response = await proxyApi(request, env, requestId);
+    } else {
+      response = await serveStaticAsset(request, env, cache, requestId);
+    }
 
     applySecurityHeaders(response);
     return response;
