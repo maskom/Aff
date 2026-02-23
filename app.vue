@@ -114,29 +114,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-
-interface Offer {
-  id: number
-  brand: string
-  product: string
-  description: string
-  category: string
-  commission: string
-  lastUpdate: string
-  conversion: number
-}
-
-interface OfferCard extends Offer {
-  brandInitials: string
-}
-
-interface Story {
-  id: number
-  label: string
-  icon: string
-  change: string
-  trend: 'naik' | 'turun' | 'stabil'
-}
+import type { Offer, OfferCard, Story } from '~/types'
 
 const offers = ref<Offer[]>([
   {
