@@ -1,12 +1,6 @@
 <template>
   <div class="app" data-testid="app">
-    <header class="app__header" data-testid="header">
-      <div class="app__title"><span class="app__title-highlight">Affiliate</span> Connect</div>
-      <button class="app__menu-button" type="button" data-testid="login-button">
-        <span class="app__menu-icon">☰</span>
-        <span class="app__menu-text">Login</span>
-      </button>
-    </header>
+    <AffiliateHeader />
 
     <section class="app__search" data-testid="search-section">
       <input
@@ -307,54 +301,7 @@ function getInitials(name: string) {
   box-shadow: 0 12px 48px var(--color-shadow-strong);
 }
 
-.app__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 20px 12px;
-  background: linear-gradient(135deg, var(--color-accent-darker), var(--color-accent-dark));
-  border-bottom: 1px solid var(--color-border-medium);
-}
-
-.app__title {
-  font-weight: 700;
-  font-size: 1.28rem;
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-}
-
-.app__title-highlight {
-  color: var(--color-accent);
-}
-
-.app__menu-button {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--color-overlay-light);
-  border: none;
-  color: #ffffff;
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.app__menu-button:hover {
-  background: var(--color-overlay-lighter);
-}
-
-.app__menu-icon {
-  font-size: 1rem;
-}
-
-.app__menu-text {
-  font-size: 0.85rem;
-}
-
-.app__search {
+.app {
   padding: 12px 20px 6px;
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border-subtle);
@@ -631,10 +578,6 @@ function getInitials(name: string) {
     max-width: 100%;
     border: none;
     box-shadow: none;
-  }
-
-  .app__header {
-    border-radius: 0;
   }
 
   .app__fab {
