@@ -83,8 +83,8 @@
     </main>
 
     <AffiliateBottomNav
-      :items="bottomMenu"
       v-model:active-item="activeMenu"
+      :items="bottomMenu"
     />
 
     <button class="app__fab" type="button" aria-label="Tambah kampanye baru">
