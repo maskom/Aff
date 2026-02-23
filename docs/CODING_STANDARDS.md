@@ -47,4 +47,4 @@ These rules apply to all code within this repository. They are enforced during c
 ## Documentation
 
 - Update the README or architecture docs when introducing new dependencies or architectural patterns.
-- Add ADRs (Architecture Decision Records) under `docs/adrs/` for significant changes (planned Phase 2 Task 5).
+- Add ADRs (Architecture Decision Records) under `docs/adrs/` for significant changes. Use the template at `docs/adrs/0001-record-template.md`. Reference relevant task IDs in the ADR.
