@@ -225,12 +225,32 @@ export default {
 
     const response = url.pathname.startsWith('/api')
       ? await proxyApi(request, env, requestId)
-      : await serveStaticAsset(request, env, cache, requestId);
+      : url.pathname === '/health'
+        ? await healthCheck(env, requestId)
+        : await serveStaticAsset(request, env, cache, requestId);
 
     applySecurityHeaders(response);
     return response;
   },
 };
+
+async function healthCheck(env: Env, requestId: string): Promise<Response> {
+  const healthData = {
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    environment: env.ENVIRONMENT || 'unknown',
+    version: '1.0.0',
+  };
+
+  return new Response(JSON.stringify(healthData), {
+    status: 200,
+    headers: {
+      'content-type': 'application/json',
+      'cache-control': 'no-store',
+      'x-request-id': requestId,
+    },
+  });
+}
 
 function applySecurityHeaders(response: Response) {
   response.headers.set('strict-transport-security', 'max-age=63072000; includeSubDomains; preload');
