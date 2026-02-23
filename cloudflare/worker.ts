@@ -7,6 +7,9 @@ export interface Env {
 const CACHE_TTL_SECONDS = 60 * 5;
 const UPSTREAM_TIMEOUT_MS = 10000;
 const ALLOWED_HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'] as const;
+const HSTS_MAX_AGE_SECONDS = 63072000;
+const JSON_CONTENT_TYPE = 'application/json';
+const X_REQUEST_ID_HEADER = 'x-request-id';
 
 const SENSITIVE_HEADERS = new Set([
   'host',
@@ -65,7 +68,7 @@ async function serveStaticAsset(
   const cached = await cache.match(cacheKey);
   if (cached) {
     cached.headers.set('x-worker-cache', 'HIT');
-    cached.headers.set('x-request-id', requestId);
+    cached.headers.set(X_REQUEST_ID_HEADER, requestId);
     log('info', 'cache_hit', { requestId, path: url.pathname, durationMs: Date.now() - startTime });
     return cached;
   }
@@ -75,7 +78,7 @@ async function serveStaticAsset(
     log('warn', 'asset_not_found', { requestId, path: url.pathname });
     return new Response('Not Found', {
       status: 404,
-      headers: { 'content-type': 'text/plain', 'x-request-id': requestId },
+      headers: { 'content-type': 'text/plain', [X_REQUEST_ID_HEADER]: requestId },
     });
   }
 
@@ -84,7 +87,7 @@ async function serveStaticAsset(
       'content-type': contentType(assetKey),
       'cache-control': `public, max-age=${CACHE_TTL_SECONDS}`,
       'x-worker-cache': 'MISS',
-      'x-request-id': requestId,
+      [X_REQUEST_ID_HEADER]: requestId,
     },
   });
 
@@ -131,8 +134,8 @@ async function proxyApi(request: Request, env: Env, requestId: string): Promise<
     return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
       status: 405,
       headers: {
-        'content-type': 'application/json',
-        'x-request-id': requestId,
+        'content-type': JSON_CONTENT_TYPE,
+        [X_REQUEST_ID_HEADER]: requestId,
         allow: ALLOWED_HTTP_METHODS.join(', '),
       },
     });
@@ -142,7 +145,7 @@ async function proxyApi(request: Request, env: Env, requestId: string): Promise<
     log('error', 'api_base_not_configured', { requestId });
     return new Response(JSON.stringify({ error: 'Service Unavailable' }), {
       status: 503,
-      headers: { 'content-type': 'application/json', 'x-request-id': requestId },
+      headers: { 'content-type': JSON_CONTENT_TYPE, [X_REQUEST_ID_HEADER]: requestId },
     });
   }
 
@@ -178,7 +181,7 @@ async function proxyApi(request: Request, env: Env, requestId: string): Promise<
       status: upstream.status,
       headers: upstream.headers,
     });
-    response.headers.set('x-request-id', requestId);
+    response.headers.set(X_REQUEST_ID_HEADER, requestId);
     return response;
   } catch (error) {
     clearTimeout(timeoutId);
@@ -192,7 +195,7 @@ async function proxyApi(request: Request, env: Env, requestId: string): Promise<
       });
       return new Response(JSON.stringify({ error: 'Gateway Timeout' }), {
         status: 504,
-        headers: { 'content-type': 'application/json', 'x-request-id': requestId },
+        headers: { 'content-type': JSON_CONTENT_TYPE, [X_REQUEST_ID_HEADER]: requestId },
       });
     }
 
@@ -205,7 +208,7 @@ async function proxyApi(request: Request, env: Env, requestId: string): Promise<
     });
     return new Response(JSON.stringify({ error: 'Bad Gateway' }), {
       status: 502,
-      headers: { 'content-type': 'application/json', 'x-request-id': requestId },
+      headers: { 'content-type': JSON_CONTENT_TYPE, [X_REQUEST_ID_HEADER]: requestId },
     });
   }
 }
@@ -232,8 +235,11 @@ export default {
   },
 };
 
-function applySecurityHeaders(response: Response) {
-  response.headers.set('strict-transport-security', 'max-age=63072000; includeSubDomains; preload');
+function applySecurityHeaders(response: Response): void {
+  response.headers.set(
+    'strict-transport-security',
+    `max-age=${HSTS_MAX_AGE_SECONDS}; includeSubDomains; preload`
+  );
   response.headers.set('x-content-type-options', 'nosniff');
   response.headers.set('x-frame-options', 'DENY');
   response.headers.set('referrer-policy', 'strict-origin-when-cross-origin');
