@@ -8,13 +8,18 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "nuxt typecheck",
-    "test": "echo \"Tests not configured yet. See AFF-02.\" && exit 0",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "format": "echo \"Formatter not configured yet. See AFF-03.\" && exit 0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260228.0",
     "@nuxt/devtools": "^1.0.3",
+    "@nuxt/test-utils": "^4.0.0",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^20.7.0",
     "nuxt": "^3.8.2",
+    "vitest": "^4.0.18",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
   }
