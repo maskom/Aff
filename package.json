@@ -25,6 +25,7 @@
     "typescript-eslint": "^8.56.0",
     "vue": "^3.3.8",
     "vue-eslint-parser": "^10.4.0",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "zod": "^3.23.8"
   }
 }
