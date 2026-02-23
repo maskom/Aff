@@ -8,8 +8,36 @@ const CACHE_TTL_SECONDS = 60 * 5;
 const UPSTREAM_TIMEOUT_MS = 10000;
 const ALLOWED_HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'] as const;
 
+const SENSITIVE_HEADERS = new Set([
+  'host',
+  'cookie',
+  'authorization',
+  'proxy-authorization',
+  'x-request-id',
+  'x-forwarded-for',
+  'x-forwarded-proto',
+  'x-forwarded-host',
+  'x-real-ip',
+  'cf-connecting-ip',
+  'cf-connecting-ipv6',
+  'cf-ipcountry',
+  'cf-ray',
+  'cf-visitor',
+  'cf-worker',
+]);
+
 function generateRequestId(): string {
   return crypto.randomUUID();
+}
+
+function filterHeaders(headers: Headers): Headers {
+  const filtered = new Headers();
+  for (const [key, value] of headers.entries()) {
+    if (!SENSITIVE_HEADERS.has(key.toLowerCase())) {
+      filtered.set(key, value);
+    }
+  }
+  return filtered;
 }
 
 function log(level: string, message: string, data: Record<string, unknown> = {}): void {
@@ -125,10 +153,12 @@ async function proxyApi(request: Request, env: Env, requestId: string): Promise<
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
 
+  const sanitizedHeaders = filterHeaders(request.headers);
+
   try {
     const upstream = await fetch(targetUrl.toString(), {
       method: request.method,
-      headers: request.headers,
+      headers: sanitizedHeaders,
       body: request.body,
       redirect: 'manual',
       signal: controller.signal,
