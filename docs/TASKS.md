@@ -6,7 +6,7 @@
 | AFF-01 | Set up GitHub Actions CI         | Phase 1 | DevOps           | 3d       | Todo   | Workflow runs lint/test/build on PR; status checks required on `main`.                                 |
 | AFF-02 | Modularize landing components    | Phase 1 | Frontend         | 5d       | Todo   | `app.vue` refactored into components under `components/affiliate/` with unit tests.                    |
 | AFF-03 | Configure linting toolchain      | Phase 1 | Tooling          | 2d       | Done   | ESLint, Prettier scripts added; Vue/TS linting configured. Husky hooks pending.                        |
-| AFF-04 | Runtime config schema            | Phase 1 | Backend          | 1d       | Todo   | `nuxt.config.ts` validates env vars using `zod`; build fails on invalid config.                        |
+| AFF-04 | Runtime config schema            | Phase 1 | Backend          | 1d       | Done   | `nuxt.config.ts` validates env vars using `zod`; build fails on invalid config.                        |
 | AFF-05 | Cloudflare deployment pipeline   | Phase 1 | DevOps           | 4d       | Todo   | Wrangler GitHub Action deploys to staging; manual approval promotes to production.                     |
 | AFF-06 | Affiliate API client             | Phase 2 | Backend          | 6d       | Todo   | Typed client with retry/backoff; integration tests hitting mock server.                                |
 | AFF-07 | OAuth login flow                 | Phase 2 | Frontend/Backend | 5d       | Todo   | Login button launches OAuth; callback stores session; protected routes redirect unauthenticated users. |
