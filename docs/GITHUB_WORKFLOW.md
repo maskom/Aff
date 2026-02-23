@@ -45,6 +45,6 @@ Before requesting review:
 - Squash merges are preferred; keep history clean by rebasing before merge.
 
 ## Automation (Planned)
-- GitHub Actions workflow to run lint/test/build on each PR (Phase 1 Task 2).
-- Automatic Cloudflare preview deployments for PR branches (Phase 2 Task 4).
-- Renovate bot for dependency updates (Phase 3 Task 2).
+- GitHub Actions workflow to run lint/test/build on each PR (AFF-01).
+- Automatic Cloudflare preview deployments for PR branches (AFF-09).
+- Renovate bot for dependency updates (Phase 3).
