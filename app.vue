@@ -280,22 +280,61 @@ function getInitials(name: string) {
 </script>
 
 <style scoped>
+:global(:root) {
+  --color-bg: #0b141a;
+  --color-surface: #111b21;
+  --color-surface-elevated: #202c33;
+  --color-accent: #25d366;
+  --color-accent-dark: #128c7e;
+  --color-accent-darker: #075e54;
+  --color-text: #e7f1ed;
+  --color-text-muted: rgba(231, 241, 237, 0.78);
+  --color-text-subtle: rgba(231, 241, 237, 0.7);
+  --color-text-faint: rgba(231, 241, 237, 0.6);
+  --color-text-weak: rgba(231, 241, 237, 0.5);
+  --color-text-ghost: rgba(231, 241, 237, 0.58);
+  --color-border: rgba(255, 255, 255, 0.05);
+  --color-border-subtle: rgba(255, 255, 255, 0.04);
+  --color-border-light: rgba(255, 255, 255, 0.08);
+  --color-border-medium: rgba(255, 255, 255, 0.12);
+  --color-border-accent: rgba(37, 211, 102, 0.22);
+  --color-border-accent-soft: rgba(37, 211, 102, 0.28);
+  --color-border-accent-faint: rgba(37, 211, 102, 0.5);
+  --color-negative: #f87171;
+  --color-overlay-light: rgba(255, 255, 255, 0.1);
+  --color-overlay-lighter: rgba(255, 255, 255, 0.18);
+  --color-overlay-surface: rgba(32, 44, 51, 0.6);
+  --color-overlay-surface-strong: rgba(32, 44, 51, 0.8);
+  --color-accent-overlay: rgba(37, 211, 102, 0.15);
+  --color-accent-overlay-dark: rgba(18, 140, 126, 0.15);
+  --color-accent-overlay-strong: rgba(37, 211, 102, 0.35);
+  --color-accent-overlay-dark-strong: rgba(18, 140, 126, 0.35);
+  --color-accent-overlay-soft: rgba(37, 211, 102, 0.12);
+  --color-accent-overlay-badge: rgba(37, 211, 102, 0.14);
+  --color-accent-avatar-start: rgba(37, 211, 102, 0.2);
+  --color-accent-avatar-end: rgba(37, 211, 102, 0.45);
+  --color-shadow: rgba(0, 0, 0, 0.3);
+  --color-shadow-strong: rgba(0, 0, 0, 0.45);
+  --color-shadow-accent: rgba(37, 211, 102, 0.3);
+  --color-shadow-accent-strong: rgba(18, 140, 126, 0.35);
+}
+
 :global(body) {
   margin: 0;
   font-family: 'Inter', 'Segoe UI', sans-serif;
-  background-color: #0b141a;
+  background-color: var(--color-bg);
 }
 
 .app {
   min-height: 100vh;
-  background: linear-gradient(180deg, #0b141a 0%, #111b21 40%, #111b21 100%);
-  color: #e7f1ed;
+  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-surface) 40%, var(--color-surface) 100%);
+  color: var(--color-text);
   display: flex;
   flex-direction: column;
   max-width: 480px;
   margin: 0 auto;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 12px 48px var(--color-shadow-strong);
 }
 
 .app__header {
@@ -303,8 +342,8 @@ function getInitials(name: string) {
   align-items: center;
   justify-content: space-between;
   padding: 18px 20px 12px;
-  background: linear-gradient(135deg, #075e54, #128c7e);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, var(--color-accent-darker), var(--color-accent-dark));
+  border-bottom: 1px solid var(--color-border-medium);
 }
 
 .app__title {
@@ -316,14 +355,14 @@ function getInitials(name: string) {
 }
 
 .app__title-highlight {
-  color: #25d366;
+  color: var(--color-accent);
 }
 
 .app__menu-button {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-overlay-light);
   border: none;
   color: #ffffff;
   border-radius: 999px;
@@ -334,7 +373,7 @@ function getInitials(name: string) {
 }
 
 .app__menu-button:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--color-overlay-lighter);
 }
 
 .app__menu-icon {
@@ -347,38 +386,38 @@ function getInitials(name: string) {
 
 .app__search {
   padding: 12px 20px 6px;
-  background-color: #111b21;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .app__search-input {
   width: 100%;
-  background-color: #202c33;
+  background-color: var(--color-surface-elevated);
   border: none;
   border-radius: 999px;
   padding: 12px 18px;
-  color: #e7f1ed;
+  color: var(--color-text);
   font-size: 0.92rem;
   outline: none;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 2px 4px var(--color-shadow);
 }
 
 .app__search-input::placeholder {
-  color: rgba(231, 241, 237, 0.6);
+  color: var(--color-text-faint);
 }
 
 .app__highlights {
   padding: 20px;
-  background: linear-gradient(135deg, rgba(37, 211, 102, 0.15), rgba(18, 140, 126, 0.15));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: linear-gradient(135deg, var(--color-accent-overlay), var(--color-accent-overlay-dark));
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .app__highlights-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(37, 211, 102, 0.14);
-  color: #25d366;
+  background: var(--color-accent-overlay-badge);
+  color: var(--color-accent);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 0.75rem;
@@ -397,18 +436,18 @@ function getInitials(name: string) {
   margin: 0 0 16px;
   font-size: 0.92rem;
   line-height: 1.5;
-  color: rgba(231, 241, 237, 0.78);
+  color: var(--color-text-muted);
 }
 
 .app__highlights-action {
-  background: linear-gradient(135deg, #25d366, #128c7e);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
   border: none;
-  color: #0b141a;
+  color: var(--color-bg);
   font-weight: 700;
   padding: 10px 18px;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.3);
+  box-shadow: 0 6px 18px var(--color-shadow-accent);
 }
 
 .app__stories {
@@ -416,8 +455,8 @@ function getInitials(name: string) {
   gap: 14px;
   padding: 16px 20px;
   overflow-x: auto;
-  background-color: #111b21;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .app__story {
@@ -427,8 +466,8 @@ function getInitials(name: string) {
   gap: 6px;
   padding: 12px;
   border-radius: 16px;
-  background: linear-gradient(135deg, rgba(37, 211, 102, 0.16), rgba(18, 140, 126, 0.12));
-  border: 1px solid rgba(37, 211, 102, 0.22);
+  background: linear-gradient(135deg, var(--color-accent-overlay), var(--color-accent-overlay-dark));
+  border: 1px solid var(--color-border-accent);
 }
 
 .app__story-icon {
@@ -449,32 +488,32 @@ function getInitials(name: string) {
 }
 
 .app__story-trend[data-trend='naik'] {
-  color: #25d366;
+  color: var(--color-accent);
 }
 
 .app__story-trend[data-trend='turun'] {
-  color: #f87171;
+  color: var(--color-negative);
 }
 
 .app__story-trend[data-trend='stabil'] {
-  color: rgba(231, 241, 237, 0.78);
+  color: var(--color-text-muted);
 }
 
 .app__filters {
   display: flex;
   gap: 10px;
   padding: 12px 20px;
-  background-color: #111b21;
+  background-color: var(--color-surface);
   overflow-x: auto;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .app__filter {
   padding: 8px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(37, 211, 102, 0.28);
-  background: rgba(32, 44, 51, 0.6);
-  color: rgba(231, 241, 237, 0.76);
+  border: 1px solid var(--color-border-accent-soft);
+  background: var(--color-overlay-surface);
+  color: var(--color-text-subtle);
   font-weight: 600;
   font-size: 0.78rem;
   cursor: pointer;
@@ -483,14 +522,14 @@ function getInitials(name: string) {
 }
 
 .app__filter.is-active {
-  background: linear-gradient(135deg, rgba(37, 211, 102, 0.35), rgba(18, 140, 126, 0.35));
-  color: #0b141a;
+  background: linear-gradient(135deg, var(--color-accent-overlay-strong), var(--color-accent-overlay-dark-strong));
+  color: var(--color-bg);
 }
 
 .app__content {
   flex: 1;
   padding: 10px 0 72px;
-  background-color: #111b21;
+  background-color: var(--color-surface);
   overflow-y: auto;
 }
 
@@ -498,7 +537,7 @@ function getInitials(name: string) {
   font-size: 0.78rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(231, 241, 237, 0.58);
+  color: var(--color-text-ghost);
   margin: 0 20px 12px;
 }
 
@@ -513,20 +552,20 @@ function getInitials(name: string) {
   align-items: center;
   gap: 14px;
   padding: 16px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--color-border-subtle);
   transition: background-color 0.2s ease;
 }
 
 .app__list-item:hover {
-  background-color: rgba(32, 44, 51, 0.6);
+  background-color: var(--color-overlay-surface);
 }
 
 .app__avatar {
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(37, 211, 102, 0.2), rgba(37, 211, 102, 0.45));
-  color: #25d366;
+  background: linear-gradient(135deg, var(--color-accent-avatar-start), var(--color-accent-avatar-end));
+  color: var(--color-accent);
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -557,11 +596,11 @@ function getInitials(name: string) {
 .app__product {
   margin: 2px 0 0;
   font-size: 0.82rem;
-  color: rgba(231, 241, 237, 0.7);
+  color: var(--color-text-subtle);
 }
 
 .app__earnings {
-  color: #25d366;
+  color: var(--color-accent);
   font-weight: 700;
   font-size: 0.85rem;
 }
@@ -570,7 +609,7 @@ function getInitials(name: string) {
   margin: 0;
   font-size: 0.84rem;
   line-height: 1.45;
-  color: rgba(231, 241, 237, 0.68);
+  color: var(--color-text-muted);
 }
 
 .app__meta {
@@ -578,14 +617,14 @@ function getInitials(name: string) {
   align-items: center;
   gap: 6px;
   font-size: 0.72rem;
-  color: rgba(231, 241, 237, 0.5);
+  color: var(--color-text-weak);
 }
 
 .app__tag {
   padding: 4px 8px;
-  background-color: rgba(32, 44, 51, 0.8);
+  background-color: var(--color-overlay-surface-strong);
   border-radius: 999px;
-  color: rgba(231, 241, 237, 0.76);
+  color: var(--color-text-subtle);
   font-weight: 600;
 }
 
@@ -599,8 +638,8 @@ function getInitials(name: string) {
 
 .app__cta {
   background: none;
-  border: 1px solid rgba(37, 211, 102, 0.5);
-  color: #25d366;
+  border: 1px solid var(--color-border-accent-faint);
+  color: var(--color-accent);
   border-radius: 999px;
   padding: 8px 14px;
   font-weight: 600;
@@ -609,13 +648,13 @@ function getInitials(name: string) {
 }
 
 .app__cta:hover {
-  background: rgba(37, 211, 102, 0.12);
+  background: var(--color-accent-overlay-soft);
 }
 
 .app__empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: rgba(231, 241, 237, 0.7);
+  color: var(--color-text-subtle);
 }
 
 .app__empty-title {
@@ -636,14 +675,14 @@ function getInitials(name: string) {
   bottom: 0;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  background-color: #202c33;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--color-surface-elevated);
+  border-top: 1px solid var(--color-border-light);
 }
 
 .app__bottom-nav-item {
   background: none;
   border: none;
-  color: rgba(231, 241, 237, 0.7);
+  color: var(--color-text-subtle);
   padding: 10px 0;
   display: flex;
   flex-direction: column;
@@ -655,11 +694,11 @@ function getInitials(name: string) {
 
 .app__bottom-nav-item:focus-visible,
 .app__bottom-nav-item:hover {
-  color: #25d366;
+  color: var(--color-accent);
 }
 
 .app__bottom-nav-item.is-active {
-  color: #25d366;
+  color: var(--color-accent);
 }
 
 .app__bottom-nav-icon {
@@ -674,12 +713,12 @@ function getInitials(name: string) {
   height: 54px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, #25d366, #128c7e);
-  color: #0b141a;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+  color: var(--color-bg);
   font-size: 1.6rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 14px 26px rgba(18, 140, 126, 0.35);
+  box-shadow: 0 14px 26px var(--color-shadow-accent-strong);
   display: flex;
   align-items: center;
   justify-content: center;
