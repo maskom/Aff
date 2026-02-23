@@ -12,8 +12,13 @@ async function serveStaticAsset(request: Request, env: Env, cache: Cache) {
   const cacheKey = new Request(url.toString(), request);
   const cached = await cache.match(cacheKey);
   if (cached) {
-    cached.headers.set('x-worker-cache', 'HIT');
-    return cached;
+    const headers = new Headers(cached.headers);
+    headers.set('x-worker-cache', 'HIT');
+    return new Response(cached.body, {
+      status: cached.status,
+      statusText: cached.statusText,
+      headers,
+    });
   }
 
   const asset = await env.AFF_STATIC.get(assetKey, { type: 'arrayBuffer' });
