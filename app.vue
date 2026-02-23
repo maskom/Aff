@@ -45,47 +45,7 @@
       </button>
     </section>
 
-    <main class="app__content" data-testid="main-content">
-      <h2 class="app__section-title">Kampanye Unggulan</h2>
-      <ul v-if="filteredOffers.length" class="app__list" data-testid="offers-list">
-        <li
-          v-for="offer in filteredOffers"
-          :key="offer.id"
-          class="app__list-item"
-          :data-testid="`offer-${offer.id}`"
-        >
-          <div class="app__avatar" :aria-label="`Avatar ${offer.brand}`">
-            {{ offer.brandInitials }}
-          </div>
-          <div class="app__item-body">
-            <div class="app__item-header">
-              <div>
-                <p class="app__brand">{{ offer.brand }}</p>
-                <p class="app__product">{{ offer.product }}</p>
-              </div>
-              <span class="app__earnings">{{ offer.commission }}</span>
-            </div>
-            <p class="app__description">{{ offer.description }}</p>
-            <div class="app__meta">
-              <span class="app__tag">{{ offer.category }}</span>
-              <span class="app__meta-separator">•</span>
-              <span class="app__meta-text">Update {{ offer.lastUpdate }}</span>
-              <span class="app__meta-separator">•</span>
-              <span class="app__meta-text">Konversi {{ offer.conversion }}%</span>
-            </div>
-          </div>
-          <button class="app__cta" type="button" :data-testid="`cta-${offer.id}`">
-            Promosikan
-          </button>
-        </li>
-      </ul>
-      <div v-else class="app__empty-state" data-testid="empty-state">
-        <p class="app__empty-title">Tidak ada kampanye ditemukan</p>
-        <p class="app__empty-text">
-          Coba gunakan kata kunci lain atau pilih kategori berbeda untuk melihat rekomendasi.
-        </p>
-      </div>
-    </main>
+    <AffiliateOfferList :offers="filteredOffers" />
 
     <AffiliateBottomNav v-model:active-item="activeMenu" :items="bottomMenu" />
 
@@ -98,6 +58,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import type { Offer, OfferCard, Story } from '~/types';
+import { getInitials } from '~/utils/format';
 
 const offers = ref<Offer[]>([
   {
@@ -229,15 +190,6 @@ const filteredOffers = computed<OfferCard[]>(() => {
     return matchesKeyword && matchesFilter;
   });
 });
-
-function getInitials(name: string) {
-  return name
-    .split(' ')
-    .map((part) => part.charAt(0))
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-}
 </script>
 
 <style scoped>
@@ -303,7 +255,7 @@ function getInitials(name: string) {
   box-shadow: 0 12px 48px var(--color-shadow-strong);
 }
 
-.app {
+.app__search {
   padding: 12px 20px 6px;
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border-subtle);
@@ -404,156 +356,6 @@ function getInitials(name: string) {
     var(--color-accent-overlay-dark-strong)
   );
   color: var(--color-bg);
-}
-
-.app__content {
-  flex: 1;
-  padding: 10px 0 72px;
-  background-color: var(--color-surface);
-  overflow-y: auto;
-}
-
-.app__section-title {
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-text-ghost);
-  margin: 0 20px 12px;
-}
-
-.app__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.app__list-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--color-border-subtle);
-  transition: background-color 0.2s ease;
-}
-
-.app__list-item:hover {
-  background-color: var(--color-overlay-surface);
-}
-
-.app__avatar {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    var(--color-accent-avatar-start),
-    var(--color-accent-avatar-end)
-  );
-  color: var(--color-accent);
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.app__item-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.app__item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.app__brand {
-  font-size: 0.98rem;
-  font-weight: 600;
-  margin: 0;
-  color: #ffffff;
-}
-
-.app__product {
-  margin: 2px 0 0;
-  font-size: 0.82rem;
-  color: var(--color-text-subtle);
-}
-
-.app__earnings {
-  color: var(--color-accent);
-  font-weight: 700;
-  font-size: 0.85rem;
-}
-
-.app__description {
-  margin: 0;
-  font-size: 0.84rem;
-  line-height: 1.45;
-  color: var(--color-text-muted);
-}
-
-.app__meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
-  color: var(--color-text-weak);
-}
-
-.app__tag {
-  padding: 4px 8px;
-  background-color: var(--color-overlay-surface-strong);
-  border-radius: 999px;
-  color: var(--color-text-subtle);
-  font-weight: 600;
-}
-
-.app__meta-separator {
-  color: rgba(231, 241, 237, 0.3);
-}
-
-.app__meta-text {
-  white-space: nowrap;
-}
-
-.app__cta {
-  background: none;
-  border: 1px solid var(--color-border-accent-faint);
-  color: var(--color-accent);
-  border-radius: 999px;
-  padding: 8px 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.app__cta:hover {
-  background: var(--color-accent-overlay-soft);
-}
-
-.app__empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--color-text-subtle);
-}
-
-.app__empty-title {
-  margin: 0 0 8px;
-  font-size: 1rem;
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.app__empty-text {
-  margin: 0;
-  font-size: 0.85rem;
-  line-height: 1.5;
 }
 
 .app__fab {
