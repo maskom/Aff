@@ -4,6 +4,23 @@ export interface Env {
 }
 
 const CACHE_TTL_SECONDS = 60 * 5;
+const API_TIMEOUT_MS = 30000;
+const PROXY_ALLOWED_HEADERS = [
+  'content-type',
+  'content-encoding',
+  'content-length',
+  'cache-control',
+  'etag',
+  'last-modified',
+  'x-request-id',
+  'x-ratelimit-limit',
+  'x-ratelimit-remaining',
+  'x-ratelimit-reset',
+];
+
+function log(level: string, message: string, data?: Record<string, unknown>) {
+  console.log(JSON.stringify({ level, message, timestamp: new Date().toISOString(), ...data }));
+}
 
 async function serveStaticAsset(request: Request, env: Env, cache: Cache) {
   const url = new URL(request.url);
@@ -45,26 +62,72 @@ function contentType(pathname: string): string {
   return 'application/octet-stream';
 }
 
-async function proxyApi(request: Request, env: Env) {
+async function proxyApi(request: Request, env: Env): Promise<Response> {
+  const requestId = crypto.randomUUID();
+  const startTime = Date.now();
+
   if (!env.AFF_API_BASE) {
-    return new Response('API base not configured', { status: 500 });
+    log('error', 'API base not configured', { requestId });
+    return new Response(JSON.stringify({ error: 'API base not configured', requestId }), {
+      status: 500,
+      headers: { 'content-type': 'application/json' },
+    });
   }
 
   const url = new URL(request.url);
   const targetUrl = new URL(url.pathname.replace(/^\/api/, ''), env.AFF_API_BASE);
   targetUrl.search = url.search;
 
-  const upstream = await fetch(targetUrl.toString(), {
-    method: request.method,
-    headers: request.headers,
-    body: request.body,
-    redirect: 'manual',
-  });
+  log('info', 'Proxying API request', { requestId, method: request.method, path: url.pathname });
 
-  return new Response(upstream.body, {
-    status: upstream.status,
-    headers: upstream.headers,
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+
+  try {
+    const upstream = await fetch(targetUrl.toString(), {
+      method: request.method,
+      headers: request.headers,
+      body: request.body,
+      redirect: 'manual',
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    const responseHeaders = new Headers();
+    PROXY_ALLOWED_HEADERS.forEach((header) => {
+      const value = upstream.headers.get(header);
+      if (value) {
+        responseHeaders.set(header, value);
+      }
+    });
+    responseHeaders.set('x-request-id', requestId);
+
+    const duration = Date.now() - startTime;
+    log('info', 'API proxy completed', { requestId, status: upstream.status, duration });
+
+    return new Response(upstream.body, {
+      status: upstream.status,
+      headers: responseHeaders,
+    });
+  } catch (error) {
+    clearTimeout(timeoutId);
+    const duration = Date.now() - startTime;
+
+    if (error instanceof Error && error.name === 'AbortError') {
+      log('error', 'API proxy timeout', { requestId, duration, timeout: API_TIMEOUT_MS });
+      return new Response(JSON.stringify({ error: 'Request timeout', requestId }), {
+        status: 504,
+        headers: { 'content-type': 'application/json' },
+      });
+    }
+
+    log('error', 'API proxy error', { requestId, duration, error: error instanceof Error ? error.message : 'Unknown error' });
+    return new Response(JSON.stringify({ error: 'Upstream error', requestId }), {
+      status: 502,
+      headers: { 'content-type': 'application/json' },
+    });
+  }
 }
 
 export default {
