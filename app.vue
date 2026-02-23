@@ -1,9 +1,7 @@
 <template>
   <div class="app">
     <header class="app__header">
-      <div class="app__title">
-        <span class="app__title-highlight">Affiliate</span> Connect
-      </div>
+      <div class="app__title"><span class="app__title-highlight">Affiliate</span> Connect</div>
       <button class="app__menu-button" type="button">
         <span class="app__menu-icon">☰</span>
         <span class="app__menu-text">Login</span>
@@ -13,6 +11,7 @@
     <section class="app__search">
       <input
         v-model="search"
+        aria-label="Cari kampanye"
         class="app__search-input"
         placeholder="Cari produk komisi tinggi atau kata kunci kampanye..."
         type="search"
@@ -23,8 +22,8 @@
       <div class="app__highlights-badge">Tips Hari Ini</div>
       <h1 class="app__highlights-title">Optimalkan penawaran terbaikmu</h1>
       <p class="app__highlights-text">
-        Gunakan materi promosi siap pakai, atur ulang CTA sesuai audiens, dan pantau
-        performa konversi untuk memaksimalkan komisi.
+        Gunakan materi promosi siap pakai, atur ulang CTA sesuai audiens, dan pantau performa
+        konversi untuk memaksimalkan komisi.
       </p>
       <button class="app__highlights-action" type="button">Lihat Toolkit</button>
     </section>
@@ -45,11 +44,22 @@
 
     <main class="app__content">
       <h2 class="app__section-title">Kampanye Unggulan</h2>
-      <ul v-if="filteredOffers.length" class="app__list">
+      <ul
+        v-if="filteredOffers.length"
+        ref="offerListRef"
+        class="app__list"
+        role="listbox"
+        tabindex="0"
+        @keydown="handleListKeydown"
+      >
         <li
-          v-for="offer in filteredOffers"
+          v-for="(offer, index) in filteredOffers"
           :key="offer.id"
-          class="app__list-item"
+          :class="['app__list-item', { 'is-focused': focusedOfferIndex === index }]"
+          :aria-selected="focusedOfferIndex === index"
+          role="option"
+          tabindex="-1"
+          @click="focusedOfferIndex = index"
         >
           <div class="app__avatar" :aria-label="`Avatar ${offer.brand}`">
             {{ offer.brandInitials }}
@@ -82,20 +92,18 @@
       </div>
     </main>
 
-    <AffiliateBottomNav
-      v-model:active-item="activeMenu"
-      :items="bottomMenu"
-    />
+    <AffiliateBottomNav v-model:active-item="activeMenu" :items="bottomMenu" />
 
-    <button class="app__fab" type="button" aria-label="Tambah kampanye baru">
-      ＋
-    </button>
+    <button class="app__fab" type="button" aria-label="Tambah kampanye baru">＋</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import type { Offer, OfferCard, Story } from '~/types'
+import { computed, ref } from 'vue';
+import type { Offer, OfferCard, Story } from '~/types';
+
+const offerListRef = ref<HTMLUListElement | null>(null);
+const focusedOfferIndex = ref(0);
 
 const offers = ref<Offer[]>([
   {
@@ -148,7 +156,7 @@ const offers = ref<Offer[]>([
     lastUpdate: '1 minggu lalu',
     conversion: 3.7,
   },
-])
+]);
 
 const bottomMenu = [
   { label: 'Beranda', icon: '🏠' },
@@ -156,7 +164,7 @@ const bottomMenu = [
   { label: 'Insight', icon: '📈' },
   { label: 'Materi', icon: '🧰' },
   { label: 'Support', icon: '💬' },
-]
+];
 
 const stories = ref<Story[]>([
   {
@@ -187,31 +195,31 @@ const stories = ref<Story[]>([
     change: '-4%',
     trend: 'turun',
   },
-])
+]);
 
-const search = ref('')
-const activeMenu = ref(bottomMenu[0].label)
-const selectedFilter = ref('Semua')
+const search = ref('');
+const activeMenu = ref(bottomMenu[0].label);
+const selectedFilter = ref('Semua');
 
 const filters = computed(() => {
-  const categories = new Set(offers.value.map((offer) => offer.category))
-  return ['Semua', ...categories]
-})
+  const categories = new Set(offers.value.map((offer) => offer.category));
+  return ['Semua', ...categories];
+});
 
 const offersWithInitials = computed<OfferCard[]>(() =>
   offers.value.map((offer) => ({
     ...offer,
     brandInitials: getInitials(offer.brand),
-  })),
-)
+  }))
+);
 
 const filteredOffers = computed<OfferCard[]>(() => {
-  const keyword = search.value.trim().toLowerCase()
+  const keyword = search.value.trim().toLowerCase();
 
   if (!keyword) {
     return offersWithInitials.value.filter((offer) =>
-      selectedFilter.value === 'Semua' ? true : offer.category === selectedFilter.value,
-    )
+      selectedFilter.value === 'Semua' ? true : offer.category === selectedFilter.value
+    );
   }
 
   return offersWithInitials.value.filter((offer) => {
@@ -219,14 +227,14 @@ const filteredOffers = computed<OfferCard[]>(() => {
       offer.brand.toLowerCase().includes(keyword) ||
       offer.product.toLowerCase().includes(keyword) ||
       offer.category.toLowerCase().includes(keyword) ||
-      offer.description.toLowerCase().includes(keyword)
+      offer.description.toLowerCase().includes(keyword);
 
     const matchesFilter =
-      selectedFilter.value === 'Semua' || offer.category === selectedFilter.value
+      selectedFilter.value === 'Semua' || offer.category === selectedFilter.value;
 
-    return matchesKeyword && matchesFilter
-  })
-})
+    return matchesKeyword && matchesFilter;
+  });
+});
 
 function getInitials(name: string) {
   return name
@@ -234,7 +242,40 @@ function getInitials(name: string) {
     .map((part) => part.charAt(0))
     .join('')
     .slice(0, 2)
-    .toUpperCase()
+    .toUpperCase();
+}
+
+function handleListKeydown(event: KeyboardEvent) {
+  const list = offerListRef.value;
+  if (!list) return;
+
+  const items = list.querySelectorAll('[role="option"]');
+  const itemCount = items.length;
+
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    focusedOfferIndex.value = Math.min(focusedOfferIndex.value + 1, itemCount - 1);
+    scrollFocusedIntoView();
+  } else if (event.key === 'ArrowUp') {
+    event.preventDefault();
+    focusedOfferIndex.value = Math.max(focusedOfferIndex.value - 1, 0);
+    scrollFocusedIntoView();
+  } else if (event.key === 'Home') {
+    event.preventDefault();
+    focusedOfferIndex.value = 0;
+    scrollFocusedIntoView();
+  } else if (event.key === 'End') {
+    event.preventDefault();
+    focusedOfferIndex.value = itemCount - 1;
+    scrollFocusedIntoView();
+  }
+}
+
+function scrollFocusedIntoView() {
+  const list = offerListRef.value;
+  if (!list) return;
+  const focusedItem = list.querySelectorAll('[role="option"]')[focusedOfferIndex.value];
+  focusedItem?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 </script>
 
@@ -286,7 +327,12 @@ function getInitials(name: string) {
 
 .app {
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-surface) 40%, var(--color-surface) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--color-bg) 0%,
+    var(--color-surface) 40%,
+    var(--color-surface) 100%
+  );
   color: var(--color-text);
   display: flex;
   flex-direction: column;
@@ -367,7 +413,11 @@ function getInitials(name: string) {
 
 .app__highlights {
   padding: 20px;
-  background: linear-gradient(135deg, var(--color-accent-overlay), var(--color-accent-overlay-dark));
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-overlay),
+    var(--color-accent-overlay-dark)
+  );
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
@@ -428,11 +478,17 @@ function getInitials(name: string) {
   font-size: 0.78rem;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .app__filter.is-active {
-  background: linear-gradient(135deg, var(--color-accent-overlay-strong), var(--color-accent-overlay-dark-strong));
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-overlay-strong),
+    var(--color-accent-overlay-dark-strong)
+  );
   color: var(--color-bg);
 }
 
@@ -470,11 +526,21 @@ function getInitials(name: string) {
   background-color: var(--color-overlay-surface);
 }
 
+.app__list-item.is-focused {
+  background-color: var(--color-accent-overlay-soft);
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
 .app__avatar {
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-accent-avatar-start), var(--color-accent-avatar-end));
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-avatar-start),
+    var(--color-accent-avatar-end)
+  );
   color: var(--color-accent);
   font-weight: 700;
   display: flex;
@@ -554,7 +620,9 @@ function getInitials(name: string) {
   padding: 8px 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .app__cta:hover {
