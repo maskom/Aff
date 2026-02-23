@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <a href="#main-content" class="app__skip-link">Lewati ke konten utama</a>
     <header class="app__header">
       <div class="app__title">
         <span class="app__title-highlight">Affiliate</span> Connect
@@ -13,6 +14,7 @@
     <section class="app__search">
       <input
         v-model="search"
+        aria-label="Cari kampanye"
         class="app__search-input"
         placeholder="Cari produk komisi tinggi atau kata kunci kampanye..."
         type="search"
@@ -29,7 +31,7 @@
       <button class="app__highlights-action" type="button">Lihat Toolkit</button>
     </section>
 
-    <section class="app__stories" aria-label="Sorotan performa harian">
+    <section class="app__stories" aria-label="Sorotan performa harian" role="region">
       <article
         v-for="story in stories"
         :key="story.id"
@@ -41,10 +43,11 @@
       </article>
     </section>
 
-    <section class="app__filters" aria-label="Filter kategori kampanye">
+    <section class="app__filters" aria-label="Filter kategori kampanye" role="group">
       <button
         v-for="filter in filters"
         :key="filter"
+        :aria-pressed="selectedFilter === filter"
         :class="['app__filter', { 'is-active': selectedFilter === filter }]"
         type="button"
         @click="selectedFilter = filter"
@@ -53,7 +56,7 @@
       </button>
     </section>
 
-    <main class="app__content">
+    <main id="main-content" class="app__content">
       <h2 class="app__section-title">Kampanye Unggulan</h2>
       <ul v-if="filteredOffers.length" class="app__list">
         <li
@@ -337,6 +340,26 @@ function getInitials(name: string) {
   box-shadow: 0 12px 48px var(--color-shadow-strong);
 }
 
+.app__skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 100;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+
+.app__skip-link:focus {
+  top: 16px;
+  outline: 2px solid var(--color-bg);
+  outline-offset: 2px;
+}
+
 .app__header {
   display: flex;
   align-items: center;
@@ -376,6 +399,11 @@ function getInitials(name: string) {
   background: var(--color-overlay-lighter);
 }
 
+.app__menu-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .app__menu-icon {
   font-size: 1rem;
 }
@@ -404,6 +432,11 @@ function getInitials(name: string) {
 
 .app__search-input::placeholder {
   color: var(--color-text-faint);
+}
+
+.app__search-input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .app__highlights {
@@ -448,6 +481,11 @@ function getInitials(name: string) {
   border-radius: 999px;
   cursor: pointer;
   box-shadow: 0 6px 18px var(--color-shadow-accent);
+}
+
+.app__highlights-action:focus-visible {
+  outline: 2px solid var(--color-bg);
+  outline-offset: 2px;
 }
 
 .app__stories {
@@ -524,6 +562,11 @@ function getInitials(name: string) {
 .app__filter.is-active {
   background: linear-gradient(135deg, var(--color-accent-overlay-strong), var(--color-accent-overlay-dark-strong));
   color: var(--color-bg);
+}
+
+.app__filter:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .app__content {
@@ -651,6 +694,11 @@ function getInitials(name: string) {
   background: var(--color-accent-overlay-soft);
 }
 
+.app__cta:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .app__empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -701,6 +749,11 @@ function getInitials(name: string) {
   color: var(--color-accent);
 }
 
+.app__bottom-nav-item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
 .app__bottom-nav-icon {
   font-size: 1.1rem;
 }
@@ -722,6 +775,11 @@ function getInitials(name: string) {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.app__fab:focus-visible {
+  outline: 3px solid var(--color-bg);
+  outline-offset: 2px;
 }
 
 @media (max-width: 560px) {
