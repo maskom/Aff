@@ -2,24 +2,57 @@ export interface Env {
   AFF_STATIC: KVNamespace;
   AFF_API_BASE?: string;
   ENVIRONMENT?: string;
+  API_TIMEOUT_MS?: string;
 }
 
 const CACHE_TTL_SECONDS = 60 * 5;
+const DEFAULT_API_TIMEOUT_MS = 30000;
 
 function generateRequestId(): string {
   return crypto.randomUUID();
 }
 
-function log(level: string, message: string, data: Record<string, unknown> = {}): void {
-  console.log(JSON.stringify({
-    timestamp: new Date().toISOString(),
-    level,
-    message,
-    ...data,
-  }));
+function getTimeout(env: Env): number {
+  const timeout = env.API_TIMEOUT_MS ? parseInt(env.API_TIMEOUT_MS, 10) : DEFAULT_API_TIMEOUT_MS;
+  return Number.isFinite(timeout) && timeout > 0 ? timeout : DEFAULT_API_TIMEOUT_MS;
 }
 
-async function serveStaticAsset(request: Request, env: Env, cache: Cache, requestId: string): Promise<Response> {
+async function fetchWithTimeout(
+  url: string,
+  options: RequestInit,
+  timeoutMs: number
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    return response;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+function log(level: string, message: string, data: Record<string, unknown> = {}): void {
+  console.log(
+    JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level,
+      message,
+      ...data,
+    })
+  );
+}
+
+async function serveStaticAsset(
+  request: Request,
+  env: Env,
+  cache: Cache,
+  requestId: string
+): Promise<Response> {
   const url = new URL(request.url);
   const assetKey = url.pathname === '/' ? '/index.html' : url.pathname;
   const startTime = Date.now();
@@ -50,7 +83,11 @@ async function serveStaticAsset(request: Request, env: Env, cache: Cache, reques
 
   response.headers.set('content-length', String((asset as ArrayBuffer).byteLength));
   await cache.put(cacheKey, response.clone());
-  log('info', 'asset_served', { requestId, path: url.pathname, durationMs: Date.now() - startTime });
+  log('info', 'asset_served', {
+    requestId,
+    path: url.pathname,
+    durationMs: Date.now() - startTime,
+  });
   return response;
 }
 
@@ -80,12 +117,13 @@ function contentType(pathname: string): string {
 
 async function proxyApi(request: Request, env: Env, requestId: string): Promise<Response> {
   const startTime = Date.now();
-  
+  const timeoutMs = getTimeout(env);
+
   if (!env.AFF_API_BASE) {
     log('error', 'api_base_not_configured', { requestId });
-    return new Response('API base not configured', { 
-      status: 500, 
-      headers: { 'x-request-id': requestId } 
+    return new Response('API base not configured', {
+      status: 500,
+      headers: { 'x-request-id': requestId },
     });
   }
 
@@ -94,19 +132,23 @@ async function proxyApi(request: Request, env: Env, requestId: string): Promise<
   targetUrl.search = url.search;
 
   try {
-    const upstream = await fetch(targetUrl.toString(), {
-      method: request.method,
-      headers: request.headers,
-      body: request.body,
-      redirect: 'manual',
-    });
+    const upstream = await fetchWithTimeout(
+      targetUrl.toString(),
+      {
+        method: request.method,
+        headers: request.headers,
+        body: request.body,
+        redirect: 'manual',
+      },
+      timeoutMs
+    );
 
-    log('info', 'api_proxy_success', { 
-      requestId, 
-      path: url.pathname, 
+    log('info', 'api_proxy_success', {
+      requestId,
+      path: url.pathname,
       method: request.method,
       status: upstream.status,
-      durationMs: Date.now() - startTime 
+      durationMs: Date.now() - startTime,
     });
 
     const response = new Response(upstream.body, {
@@ -116,16 +158,25 @@ async function proxyApi(request: Request, env: Env, requestId: string): Promise<
     response.headers.set('x-request-id', requestId);
     return response;
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Upstream request failed';
-    log('error', 'api_proxy_error', { 
-      requestId, 
-      path: url.pathname, 
+    const durationMs = Date.now() - startTime;
+    const isTimeout = error instanceof Error && error.name === 'AbortError';
+    const message = isTimeout
+      ? `Request timed out after ${timeoutMs}ms`
+      : error instanceof Error
+        ? error.message
+        : 'Upstream request failed';
+
+    log('error', isTimeout ? 'api_proxy_timeout' : 'api_proxy_error', {
+      requestId,
+      path: url.pathname,
       method: request.method,
       error: message,
-      durationMs: Date.now() - startTime 
+      durationMs,
+      timeoutMs,
     });
-    return new Response(JSON.stringify({ error: message }), {
-      status: 502,
+
+    return new Response(JSON.stringify({ error: message, timeout: isTimeout }), {
+      status: isTimeout ? 504 : 502,
       headers: { 'content-type': 'application/json', 'x-request-id': requestId },
     });
   }
@@ -137,11 +188,11 @@ export default {
     const cache = caches.default;
     const requestId = generateRequestId();
 
-    log('info', 'request_received', { 
-      requestId, 
-      method: request.method, 
+    log('info', 'request_received', {
+      requestId,
+      method: request.method,
       path: url.pathname,
-      environment: env.ENVIRONMENT || 'unknown'
+      environment: env.ENVIRONMENT || 'unknown',
     });
 
     const response = url.pathname.startsWith('/api')
