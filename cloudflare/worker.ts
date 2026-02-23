@@ -34,15 +34,28 @@ async function serveStaticAsset(request: Request, env: Env, cache: Cache) {
   return response;
 }
 
+const MIME_TYPES: Record<string, string> = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'application/javascript; charset=utf-8',
+  '.mjs': 'application/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+  '.ico': 'image/x-icon',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.webmanifest': 'application/manifest+json',
+  '.xml': 'application/xml; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
+};
+
 function contentType(pathname: string): string {
-  if (pathname.endsWith('.html')) return 'text/html; charset=utf-8';
-  if (pathname.endsWith('.js')) return 'application/javascript; charset=utf-8';
-  if (pathname.endsWith('.css')) return 'text/css; charset=utf-8';
-  if (pathname.endsWith('.json')) return 'application/json; charset=utf-8';
-  if (pathname.endsWith('.svg')) return 'image/svg+xml';
-  if (pathname.endsWith('.png')) return 'image/png';
-  if (pathname.endsWith('.jpg') || pathname.endsWith('.jpeg')) return 'image/jpeg';
-  return 'application/octet-stream';
+  const ext = pathname.slice(pathname.lastIndexOf('.')).toLowerCase();
+  return MIME_TYPES[ext] || 'application/octet-stream';
 }
 
 async function proxyApi(request: Request, env: Env) {
