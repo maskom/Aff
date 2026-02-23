@@ -2,6 +2,10 @@
 
 An affiliate marketing landing experience inspired by WhatsApp's conversational layout. The project is built with Nuxt 3 and Vue 3, designed for rapid iteration, automated quality checks, and deployment to Cloudflare Workers.
 
+## Prerequisites
+- **Node.js** 18.x or higher (LTS recommended)
+- **pnpm** 8.x or higher
+
 ## Documentation Map
 - [`docs/CODING_STANDARDS.md`](docs/CODING_STANDARDS.md) — language, testing, accessibility, and review requirements for contributors.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — high-level system overview, Nuxt modules, state management, and theming strategy.
