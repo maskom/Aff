@@ -1,11 +1,12 @@
 <template>
-  <nav class="bottom-nav" aria-label="Menu utama">
+  <nav class="bottom-nav" aria-label="Menu utama" data-testid="bottom-nav">
     <button
       v-for="item in items"
       :key="item.label"
       :aria-label="item.label"
       :class="['bottom-nav__item', { 'is-active': activeItem === item.label }]"
       type="button"
+      :data-testid="`nav-${item.label.toLowerCase()}`"
       @click="$emit('update:activeItem', item.label)"
     >
       <span class="bottom-nav__icon">{{ item.icon }}</span>
@@ -16,18 +17,18 @@
 
 <script setup lang="ts">
 interface MenuItem {
-  label: string
-  icon: string
+  label: string;
+  icon: string;
 }
 
 defineProps<{
-  items: MenuItem[]
-  activeItem: string
-}>()
+  items: MenuItem[];
+  activeItem: string;
+}>();
 
 defineEmits<{
-  'update:activeItem': [value: string]
-}>()
+  'update:activeItem': [value: string];
+}>();
 </script>
 
 <style scoped>
