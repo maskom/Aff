@@ -5,6 +5,22 @@ export interface Env {
 
 const CACHE_TTL_SECONDS = 60 * 5;
 
+function generateRequestId(): string {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+function getOrCreateRequestId(request: Request): string {
+  const existingId = request.headers.get('x-request-id');
+  if (existingId && /^[a-f0-9-]{16,36}$/i.test(existingId)) {
+    return existingId;
+  }
+  return generateRequestId();
+}
+
 async function serveStaticAsset(request: Request, env: Env, cache: Cache) {
   const url = new URL(request.url);
   const assetKey = url.pathname === '/' ? '/index.html' : url.pathname;
@@ -58,7 +74,7 @@ function contentType(pathname: string): string {
   return MIME_TYPES[ext] || 'application/octet-stream';
 }
 
-async function proxyApi(request: Request, env: Env) {
+async function proxyApi(request: Request, env: Env, requestId: string) {
   if (!env.AFF_API_BASE) {
     return new Response('API base not configured', { status: 500 });
   }
@@ -67,23 +83,29 @@ async function proxyApi(request: Request, env: Env) {
   const targetUrl = new URL(url.pathname.replace(/^\/api/, ''), env.AFF_API_BASE);
   targetUrl.search = url.search;
 
+  const proxyHeaders = new Headers(request.headers);
+  proxyHeaders.set('x-request-id', requestId);
+
   try {
     const upstream = await fetch(targetUrl.toString(), {
       method: request.method,
-      headers: request.headers,
+      headers: proxyHeaders,
       body: request.body,
       redirect: 'manual',
     });
 
+    const responseHeaders = new Headers(upstream.headers);
+    responseHeaders.set('x-request-id', requestId);
+
     return new Response(upstream.body, {
       status: upstream.status,
-      headers: upstream.headers,
+      headers: responseHeaders,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Upstream request failed';
-    return new Response(JSON.stringify({ error: message }), {
+    return new Response(JSON.stringify({ error: message, requestId }), {
       status: 502,
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', 'x-request-id': requestId },
     });
   }
 }
@@ -92,11 +114,13 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const cache = caches.default;
+    const requestId = getOrCreateRequestId(request);
 
     const response = url.pathname.startsWith('/api')
-      ? await proxyApi(request, env)
+      ? await proxyApi(request, env, requestId)
       : await serveStaticAsset(request, env, cache);
 
+    response.headers.set('x-request-id', requestId);
     applySecurityHeaders(response);
     return response;
   },
