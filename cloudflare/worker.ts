@@ -96,6 +96,10 @@ function applySecurityHeaders(response: Response) {
   response.headers.set('referrer-policy', 'strict-origin-when-cross-origin');
   response.headers.set(
     'content-security-policy',
-    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'"
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'"
+  );
+  response.headers.set(
+    'permissions-policy',
+    'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()'
   );
 }
