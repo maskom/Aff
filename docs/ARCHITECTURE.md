@@ -28,7 +28,7 @@
 
 ## Security Considerations
 - Enforce HTTPS only cookies and apply CSP headers through the Worker.
-- Validate all environment variables in Nuxt runtime config before bootstrapping (to be implemented in Phase 1 Task 4).
+- Validate all environment variables in Nuxt runtime config before bootstrapping (implemented via Zod schema in `nuxt.config.ts`).
 - Sanitize user-provided content before rendering inside chat-like UI elements.
 
 ## Observability
