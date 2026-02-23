@@ -35,12 +35,21 @@
 - Utilize Cloudflare Workers analytics plus client-side events (Phase 2 Task 6) to monitor conversions.
 - Add logging middleware that emits structured JSON to Cloudflare Logs.
 
-## Directory Conventions (Future)
+## Directory Conventions
 ```
 components/
   affiliate/
+    AppHeader.vue
+    SearchBar.vue
+    HighlightsSection.vue
+    StoriesSection.vue
+    FilterBar.vue
     CampaignCard.vue
-    OfferFilterBar.vue
+    CampaignList.vue
+    BottomNav.vue
+    FloatingActionButton.vue
+types/
+  affiliate.ts
 composables/
   useCampaigns.ts
   useLeads.ts
