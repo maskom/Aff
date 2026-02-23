@@ -115,4 +115,6 @@ function applySecurityHeaders(response: Response) {
     'permissions-policy',
     'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()'
   );
+  response.headers.set('cross-origin-opener-policy', 'same-origin');
+  response.headers.set('cross-origin-resource-policy', 'same-origin');
 }
