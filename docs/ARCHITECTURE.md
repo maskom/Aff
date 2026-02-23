@@ -28,7 +28,7 @@
 
 ## Security Considerations
 - Enforce HTTPS only cookies and apply CSP headers through the Worker.
-- Validate all environment variables in Nuxt runtime config before bootstrapping (to be implemented in Phase 1 Task 4).
+- Validate all environment variables in Nuxt runtime config before bootstrapping via `lib/config.ts` using Zod schema validation (implemented in AFF-04).
 - Sanitize user-provided content before rendering inside chat-like UI elements.
 
 ## Observability
@@ -45,6 +45,7 @@ composables/
   useCampaigns.ts
   useLeads.ts
 lib/
+  config.ts
   api/
     affiliateClient.ts
   analytics/

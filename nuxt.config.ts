@@ -1,8 +1,13 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { validateConfig } from './lib/config'
+
+const config = validateConfig(process.env)
+
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: config.NODE_ENV === 'development' },
   routeRules: {
-    // prerender index route by default
     '/': { prerender: true },
+  },
+  runtimeConfig: {
+    apiBase: config.AFF_API_BASE,
   },
 });
