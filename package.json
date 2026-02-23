@@ -6,9 +6,13 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "nuxt typecheck",
+    "test": "echo \"Tests not configured yet. See AFF-02.\" && exit 0",
+    "format": "echo \"Formatter not configured yet. See AFF-03.\" && exit 0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260228.0",
     "@nuxt/devtools": "^1.0.3",
     "nuxt": "^3.8.2",
     "vue": "^3.3.8",
