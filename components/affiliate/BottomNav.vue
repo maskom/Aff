@@ -16,10 +16,7 @@
 </template>
 
 <script setup lang="ts">
-interface MenuItem {
-  label: string;
-  icon: string;
-}
+import type { MenuItem } from '~/types';
 
 defineProps<{
   items: MenuItem[];

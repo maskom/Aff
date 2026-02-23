@@ -14,13 +14,7 @@
 </template>
 
 <script setup lang="ts">
-interface Story {
-  id: number;
-  label: string;
-  icon: string;
-  change: string;
-  trend: 'naik' | 'turun' | 'stabil';
-}
+import type { Story } from '~/types';
 
 defineProps<{
   stories: Story[];
