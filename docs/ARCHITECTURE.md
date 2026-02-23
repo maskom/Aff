@@ -28,6 +28,7 @@
 
 ## Security Considerations
 - Enforce HTTPS only cookies and apply CSP headers through the Worker.
+- API proxy filters request headers to only allow safe headers (`authorization`, `content-type`, `accept`, etc.) and sets correct `Host` header for upstream requests.
 - Validate all environment variables in Nuxt runtime config before bootstrapping (to be implemented in Phase 1 Task 4).
 - Sanitize user-provided content before rendering inside chat-like UI elements.
 

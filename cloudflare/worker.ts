@@ -58,6 +58,32 @@ function contentType(pathname: string): string {
   return MIME_TYPES[ext] || 'application/octet-stream';
 }
 
+const PROXY_ALLOW_HEADERS = new Set([
+  'accept',
+  'accept-encoding',
+  'accept-language',
+  'authorization',
+  'cache-control',
+  'content-type',
+  'if-modified-since',
+  'if-none-match',
+  'user-agent',
+  'x-request-id',
+]);
+
+function filterProxyHeaders(headers: Headers, targetHost: string): Headers {
+  const filtered = new Headers();
+  filtered.set('host', targetHost);
+
+  headers.forEach((value, key) => {
+    if (PROXY_ALLOW_HEADERS.has(key.toLowerCase())) {
+      filtered.set(key, value);
+    }
+  });
+
+  return filtered;
+}
+
 async function proxyApi(request: Request, env: Env) {
   if (!env.AFF_API_BASE) {
     return new Response('API base not configured', { status: 500 });
@@ -70,7 +96,7 @@ async function proxyApi(request: Request, env: Env) {
   try {
     const upstream = await fetch(targetUrl.toString(), {
       method: request.method,
-      headers: request.headers,
+      headers: filterProxyHeaders(request.headers, targetUrl.host),
       body: request.body,
       redirect: 'manual',
     });
