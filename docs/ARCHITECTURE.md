@@ -1,41 +1,50 @@
 # Architecture Overview
 
 ## Application Layers
+
 - **Presentation (Vue components)** — `app.vue` hosts the primary dashboard layout. Future views belong under `pages/` with child components under `components/`.
 - **State & data orchestration** — Client-side state is managed with Vue composables. Remote data will be fetched from affiliate APIs (Phase 2) using typed clients under `lib/`.
 - **Edge delivery** — Cloudflare Worker (`cloudflare/worker.ts`) serves pre-rendered assets from KV storage, providing low-latency global delivery.
 
 ## Rendering Strategy
+
 - The landing page leverages Nuxt's hybrid rendering with the `/` route statically pre-rendered (see `nuxt.config.ts`).
 - Future dynamic routes (e.g., `/campaigns/[id]`) will employ server-side rendering for personalized content while caching via Cloudflare.
 
 ## Theming
+
 - Design tokens are defined via CSS custom properties in `app.vue`:
   - `--color-bg`, `--color-surface`, `--color-accent`, etc.
   - Apply tokens through utility classes and scoped styles to maintain consistency.
 - A theme switcher (Phase 3) will manipulate tokens at runtime.
 
 ## Data Flow (Planned)
+
 1. User authenticates with affiliate provider (OAuth) and receives JWT stored in HttpOnly cookies.
 2. Nuxt server routes proxy requests to affiliate APIs using server middleware for security.
 3. Components consume composables (e.g., `useCampaigns`) that expose typed refs, loading states, and cache invalidation helpers.
 4. Edge caching: Worker caches API responses in Workers KV with TTL hints from the API, enabling near real-time updates with revalidation.
 
 ## Cloudflare Integration
+
 - **Worker** — Handles static asset responses and proxies API calls to the Nuxt server or external affiliate APIs when necessary. Includes error handling for upstream failures (returns 502 with JSON error details).
+  - Health endpoints: `/health` (alias `/healthz`) returns service status and metadata; `/ready` (alias `/readyz`) checks KV binding availability for load balancer readiness probes.
 - **R2 / KV** — Store static assets and cached API payloads.
 - **Durable Objects** (Phase 4) — Coordinate rate limits and store chat-like conversation history for affiliate leads.
 
 ## Security Considerations
+
 - Enforce HTTPS only cookies and apply CSP headers through the Worker.
 - Validate all environment variables in Nuxt runtime config before bootstrapping (to be implemented in Phase 1 Task 4).
 - Sanitize user-provided content before rendering inside chat-like UI elements.
 
 ## Observability
+
 - Utilize Cloudflare Workers analytics plus client-side events (Phase 2 Task 6) to monitor conversions.
 - Add logging middleware that emits structured JSON to Cloudflare Logs.
 
 ## Directory Conventions (Future)
+
 ```
 components/
   affiliate/
