@@ -29,17 +29,7 @@
       <button class="app__highlights-action" type="button">Lihat Toolkit</button>
     </section>
 
-    <section class="app__stories" aria-label="Sorotan performa harian">
-      <article
-        v-for="story in stories"
-        :key="story.id"
-        class="app__story"
-      >
-        <div class="app__story-icon">{{ story.icon }}</div>
-        <p class="app__story-label">{{ story.label }}</p>
-        <p class="app__story-trend" :data-trend="story.trend">{{ story.change }}</p>
-      </article>
-    </section>
+    <AffiliateStoriesSection :stories="stories" />
 
     <section class="app__filters" aria-label="Filter kategori kampanye">
       <button
@@ -92,19 +82,10 @@
       </div>
     </main>
 
-    <nav class="app__bottom-nav" aria-label="Menu utama">
-      <button
-        v-for="item in bottomMenu"
-        :key="item.label"
-        :aria-label="item.label"
-        :class="['app__bottom-nav-item', { 'is-active': activeMenu === item.label }]"
-        type="button"
-        @click="activeMenu = item.label"
-      >
-        <span class="app__bottom-nav-icon">{{ item.icon }}</span>
-        <span class="app__bottom-nav-text">{{ item.label }}</span>
-      </button>
-    </nav>
+    <AffiliateBottomNav
+      v-model:active-item="activeMenu"
+      :items="bottomMenu"
+    />
 
     <button class="app__fab" type="button" aria-label="Tambah kampanye baru">
       ＋
@@ -450,55 +431,6 @@ function getInitials(name: string) {
   box-shadow: 0 6px 18px var(--color-shadow-accent);
 }
 
-.app__stories {
-  display: flex;
-  gap: 14px;
-  padding: 16px 20px;
-  overflow-x: auto;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.app__story {
-  min-width: 110px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 12px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--color-accent-overlay), var(--color-accent-overlay-dark));
-  border: 1px solid var(--color-border-accent);
-}
-
-.app__story-icon {
-  font-size: 1.5rem;
-}
-
-.app__story-label {
-  margin: 0;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.app__story-trend {
-  margin: 0;
-  font-size: 0.74rem;
-  font-weight: 600;
-}
-
-.app__story-trend[data-trend='naik'] {
-  color: var(--color-accent);
-}
-
-.app__story-trend[data-trend='turun'] {
-  color: var(--color-negative);
-}
-
-.app__story-trend[data-trend='stabil'] {
-  color: var(--color-text-muted);
-}
-
 .app__filters {
   display: flex;
   gap: 10px;
@@ -668,41 +600,6 @@ function getInitials(name: string) {
   margin: 0;
   font-size: 0.85rem;
   line-height: 1.5;
-}
-
-.app__bottom-nav {
-  position: sticky;
-  bottom: 0;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  background-color: var(--color-surface-elevated);
-  border-top: 1px solid var(--color-border-light);
-}
-
-.app__bottom-nav-item {
-  background: none;
-  border: none;
-  color: var(--color-text-subtle);
-  padding: 10px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  font-size: 0.76rem;
-}
-
-.app__bottom-nav-item:focus-visible,
-.app__bottom-nav-item:hover {
-  color: var(--color-accent);
-}
-
-.app__bottom-nav-item.is-active {
-  color: var(--color-accent);
-}
-
-.app__bottom-nav-icon {
-  font-size: 1.1rem;
 }
 
 .app__fab {
