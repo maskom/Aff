@@ -1,10 +1,6 @@
 <template>
   <section class="stories" aria-label="Sorotan performa harian">
-    <article
-      v-for="story in stories"
-      :key="story.id"
-      class="stories__item"
-    >
+    <article v-for="story in stories" :key="story.id" class="stories__item">
       <div class="stories__icon">{{ story.icon }}</div>
       <p class="stories__label">{{ story.label }}</p>
       <p class="stories__trend" :data-trend="story.trend">{{ story.change }}</p>
@@ -13,17 +9,11 @@
 </template>
 
 <script setup lang="ts">
-interface Story {
-  id: number
-  label: string
-  icon: string
-  change: string
-  trend: 'naik' | 'turun' | 'stabil'
-}
+import type { Story } from '~/types';
 
 defineProps<{
-  stories: Story[]
-}>()
+  stories: Story[];
+}>();
 </script>
 
 <style scoped>
@@ -43,7 +33,11 @@ defineProps<{
   gap: 6px;
   padding: 12px;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--color-accent-overlay), var(--color-accent-overlay-dark));
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-overlay),
+    var(--color-accent-overlay-dark)
+  );
   border: 1px solid var(--color-border-accent);
 }
 
