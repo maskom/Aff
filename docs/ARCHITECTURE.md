@@ -35,6 +35,15 @@
 - Utilize Cloudflare Workers analytics plus client-side events (Phase 2 Task 6) to monitor conversions.
 - Add logging middleware that emits structured JSON to Cloudflare Logs.
 
+## CI/CD Pipeline
+- **GitHub Actions CI** — Automated quality checks run on every pull request and push to `main`:
+  - Type checking with `nuxi typecheck`
+  - Build verification with `nuxt build`
+  - Uses pnpm for dependency management with frozen lockfile enforcement
+  - Workflow file: `.github/workflows/ci.yml`
+- **Status checks** — CI must pass before PRs can be merged (enforce via branch protection rules)
+- **Future enhancements** — Lint (AFF-03) and test (AFF-02) stages will be added as tooling is configured
+
 ## Directory Conventions (Future)
 ```
 components/

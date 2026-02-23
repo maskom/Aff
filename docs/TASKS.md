@@ -3,7 +3,7 @@
 | ID | Title | Phase | Type | Estimate | Status | Acceptance Criteria |
 | --- | --- | --- | --- | --- | --- | --- |
 | AFF-00 | Establish documentation baseline | Phase 1 | Documentation | 2d | Done | README, standards, plan, and workflow docs published; Cloudflare deployment template added. |
-| AFF-01 | Set up GitHub Actions CI | Phase 1 | DevOps | 3d | Todo | Workflow runs lint/test/build on PR; status checks required on `main`. |
+| AFF-01 | Set up GitHub Actions CI | Phase 1 | DevOps | 3d | In Progress | Workflow runs lint/test/build on PR; status checks required on `main`. |
 | AFF-02 | Modularize landing components | Phase 1 | Frontend | 5d | Todo | `app.vue` refactored into components under `components/affiliate/` with unit tests. |
 | AFF-03 | Configure linting toolchain | Phase 1 | Tooling | 2d | Todo | ESLint, Prettier, Stylelint scripts added; Husky hooks enforce on commit. |
 | AFF-04 | Runtime config schema | Phase 1 | Backend | 1d | Todo | `nuxt.config.ts` validates env vars using `zod`; build fails on invalid config. |

@@ -70,7 +70,7 @@ async function proxyApi(request: Request, env: Env) {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
-    const cache = caches.default;
+    const cache = (caches as unknown as { default: Cache }).default;
 
     const response = url.pathname.startsWith('/api')
       ? await proxyApi(request, env)
